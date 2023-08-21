@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- navbar-->
+    <script src="navbar/navbar.js"></script>
+    <link rel="stylesheet" href="navbar/navbar.css">
+
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    <title>Document</title>
+
+    <script>
+        function todetail(list_id){
+            
+            location.href = "product_detail.html?id="+list_id+"";
+        }
+        function open_photo(){ 
+            $.ajax({
+                    url: "appliance.php/shop_all.php",
+                    type: "GET",
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            var photo = response[i];                          
+                            var item ='<div class="col-12" onclick="todetail('+photo.id+')">\
+                                            <div class="d-flex flex-row align-items-center bg-light">\
+                                                <div class="col-2 w-auto">\
+                                                    <img src="'+ "data:image/jpeg;base64," + photo.pic +'" height="200" width="200"   class="rounded-3 p-1" id="photo_show">\
+                                                </div>\
+                                                <div class="col-6">\
+                                                    <div class="ms-5 mt-2 mb-2">\
+                                                        <h3 class="fw-bold">'+photo.appliance+'</h3>\
+                                                        <h4 class="text-muted mt-4">NT:'+photo.price+'</h4>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                    $('#shop_all').append(item);
+                            }
+                        } else {
+                            $('#shop_all').html('沒有照片可顯示');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+        }
+    </script>
+</head>
+<body onload="open_photo()">
+    <div id="wrapper">
+        <div class="overlay"></div>
+    
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+            <ul class="nav sidebar-nav">
+                <!--
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a href="#">Brand</a>
+                        </div>
+                    </div>
+                    
+                <li class="mt-5"><a href="#home"><i class="fa-solid fa-cart-shopping  me-2 fa-bounce"></i>攝影器材買賣</a></li>
+                <li><a href="user.html"><i class="fa-solid fa-user me-2 fa-bounce"></i>會員專區</a></li>
+                <li><a href="#team"><i class="fa-solid fa-camera me-2 fa-bounce"></i>專業外拍合作諮詢</a></li>
+                -->
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-user me-2 "></i>會員專區</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="user.html"><i class="fa-solid fa-user-plus me-2"></i>個人資料</a></li>
+                        <li><a class="dropdown-item" href="record.html"><i class="fa-solid fa-basket-shopping me-2"></i>買賣紀錄</a></li>
+                        <li><a class="dropdown-item" href="consultation_record.html"><i class="fa-solid fa-headset me-2"></i>諮詢紀錄</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-cart-shopping  me-2 "></i>器材買賣</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_product.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋品項</a></li>
+                        <li><a class="dropdown-item" href="shop.html"><i class="fa-solid fa-clipboard-list me-3"></i>所有品項</a></li>
+                        <li><a class="dropdown-item" href="upappliance.html"><i class="fa-solid fa-tag me-2"></i>上架攝影器材</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-camera-retro me-2"></i>外拍諮詢
+                    </a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_photographer.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋攝影師</a></li>
+                        <li><a class="dropdown-item" href="allphoto.html"><i class="fa-solid fa-image me-2"></i>所有作品集</a></li>
+                        <li><a class="dropdown-item" href="upphoto.html"><i class="fa-solid fa-photo-film me-2"></i>發布作品集</a></li>
+                    </ul>
+                </li>
+    
+            </ul>
+        </nav>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+
+            <button type="button" class="hamburger animated fadeInLeft is-closed" data-toggle="offcanvas">
+                <span class="hamb-top"></span>
+                <span class="hamb-middle"></span>
+                <span class="hamb-bottom"></span>
+            </button>
+
+            <div class="container">
+                <div class="jumbotron  text-dark text-center jumbotron-fluid"> 
+                    <h1 class="display-5 font-weight-bold ">所有商品</h1>
+                </div>
+                <hr style="filter: alpha(opacity=100,finishopacity=0,style=3)" width="100%" color="#6f5499" size="3"/>
+                
+                <div class="row g-1" id="shop_all">
+                                       
+                </div>
+
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</body>
+</html>

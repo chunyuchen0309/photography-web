@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>upphoto</title>
+
+    <!--bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- navbar-->
+    <script src="navbar/navbar.js"></script>
+    <link rel="stylesheet" href="navbar/navbar.css">
+<link rel="stylesheet" href="sendemail.css">
+    
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+   
+        <script>
+            function record(id) {
+                $.ajax({
+                    url: "consultation_record/chat.php",
+                    type: "POST",
+                    data:{id:id},
+                    dataType: 'json',
+                    success: function (response) {
+                        //var responseData = JSON.parse(response);                   
+                        // 成功從資料庫獲取資料後執行的程式碼
+                        var bg1;
+                        if (response.length > 0) {
+                            // 迭代資料陣列，建立照片和訊息的HTML元素
+                            for (var i = 0; i < response.length; i++) {
+                                if(i%2 ==0){
+                                    bg1="background-color: silver;";
+                        
+                                }else{
+                                    bg1="background-color: lightgray;";
+                                }
+                                var photo = response[i];
+                                var item = '<div class="col-12" style="'+ bg1 + '" >\
+                                                    <div class="col-10">\
+                                                        <div class="ms-5 mt-2 mb-2">\
+                                                            <h3 class="text-muted">'+ photo.sender + '</h3>\
+                                                        </div>\
+                                                        <div class="ms-5 mt-2 mb-2">\
+                                                            <h5 class="text-muted">於'+ photo.time + '寄出</h5>\
+                                                        </div>\
+                                                        <div class="ms-5 mt-2 mb-2">\
+                                                            <h5 class="text-muted">標題: '+ photo.title + '</h5>\
+                                                        </div>\
+                                                        <div class="ms-5">\
+                                                            <h5 class="text-muted" style="white-space: pre-line;">詳細資訊: '+ photo.comment + '</h5>\
+                                                        </div>\
+                                                    </div>\
+                                            </div>';
+
+
+                                $('#shop_all').append(item);
+                            }
+                        } else {
+                        }
+                    },
+
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            function onpen() {
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('id');
+                //alert(id);
+                $.ajax({
+                    url: "user.php/download_profile.php",
+                    method: 'GET',
+                    success: function (response) {
+                        //alert(response);
+                        var responseData = JSON.parse(response);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                    }
+                });
+                record(id);
+            }
+
+            function send() {
+                var title = $('#title').val();
+                var comment = $('#comment').val();
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('id');
+                $.ajax({
+                    url: "consultation_record/send1.php",
+                    method: 'POST',
+                    data: {
+                        id:id,
+                        title: title,
+                        comment: comment,
+                    },
+                    success: function (response) {
+                        //alert(response);
+                        location.href = "consultation_record.html";
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                    }
+                });
+            }
+
+        </script>
+
+</head>
+<body onload="onpen()">
+    <div id="wrapper">
+        <div class="overlay"></div>
+    
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+            <ul class="nav sidebar-nav">
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-user me-2 "></i>會員專區</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="user.html"><i class="fa-solid fa-user-plus me-2"></i>個人資料</a></li>
+                        <li><a class="dropdown-item" href="record.html"><i class="fa-solid fa-basket-shopping me-2"></i>買賣紀錄</a></li>
+                        <li><a class="dropdown-item" href="consultation_record.html"><i class="fa-solid fa-headset me-2"></i>諮詢紀錄</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-cart-shopping  me-2 "></i>器材買賣</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_product.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋品項</a></li>
+                        <li><a class="dropdown-item" href="shop.html"><i class="fa-solid fa-clipboard-list me-3"></i>所有品項</a></li>
+                        <li><a class="dropdown-item" href="upappliance.html"><i class="fa-solid fa-tag me-2"></i>上架攝影器材</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="fa-solid fa-camera-retro me-2"></i>外拍諮詢
+                    </a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_photographer.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋攝影師</a></li>
+                        <li><a class="dropdown-item" href="allphoto.html"><i class="fa-solid fa-image me-2"></i>所有作品集</a></li>
+                        <li><a class="dropdown-item" href="upphoto.html"><i class="fa-solid fa-photo-film me-2"></i>發布作品集</a></li>
+                    </ul>
+                </li>
+    
+            </ul>
+        </nav>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper" >
+
+            <button type="button" class="hamburger animated fadeInLeft is-closed" data-toggle="offcanvas">
+                <span class="hamb-top"></span>
+                <span class="hamb-middle"></span>
+                <span class="hamb-bottom"></span>
+            </button>
+
+            <div class="container">
+
+                <div class="row g-1" style="overflow-y:scroll; height:400px; " id="shop_all" >
+                    
+                                
+                    
+                </div>
+                <div class="container mt-5">
+                    <div class="row ">
+                        <div class="col-md-3" >
+                            <div class="contact-info">
+                                <img src="https://image.ibb.co/kUASdV/contact-image.png" alt="image"/>
+                                <h2>回覆</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-9 ">
+                            <div class="contact-form ">
+                                
+                                <div class="form-group " >
+                                  <label class="control-label col-sm-2" for="lname">標題:</label>
+                                  <div class="col-sm-10">          
+                                    <input type="text" class="form-control" id="title">
+                                  </div>
+                                </div>
+                                <div class="form-group mt-2 ">
+                                  <label class="control-label col-sm-2" for="comment">回覆內容:</label>
+                                  <div class="col-sm-10">
+                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                  </div>
+                                </div>
+                                <div class="form-group mt-2 ">        
+                                  <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-default" onclick="send()">送出</button>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+    
+    </div>
+    <!-- /#wrapper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</body>
+</html>

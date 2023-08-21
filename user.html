@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <!--bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!--jquery-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- navbar-->
+    <script src="navbar/navbar.js"></script>
+    <link rel="stylesheet" href="navbar/navbar.css">
+    <!--fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="user.css/profile.css">
+    <script type="text/javascript">
+        function logout(){
+            $.ajax({
+                url: 'logout.php',
+                method: "GET",
+                success: res=> {        
+                    if(res == '1'){
+                        alert('success logout');
+                        location.href="index.html";
+                    }
+                },error: function(jqXHR, textStatus, errorThrown) {
+                    alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function uploadPhoto() {
+            var fileInput = document.getElementById("photoInput");
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("photo", file);
+            $.ajax({
+                url: "user.php/uploadimg.php",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {             
+                    alert(response);
+                    location.href = "user.html";
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function downloadPhoto() {
+                $.ajax({
+                    url: "user.php/downloadimg.php",
+                    type: "GET",
+                    dataType: "text",
+                    success: function (response) {
+                        // 更新图片元素的 src 属性
+                        
+                        if(response!=0){
+                            $("#userImage").attr("src", "data:image/jpeg;base64," + response);
+                        }
+                        
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+            const nameG=null;
+        function onpen() {
+            var u_0 = document.getElementById("u_0");
+            var u_1 = document.getElementById("u_1");
+            var u_2 = document.getElementById("u_2");
+            var u_3 = document.getElementById("u_3");
+            var u_4 = document.getElementById("u_4");
+            $.ajax({
+                url: "user.php/download_profile.php",
+                method: 'GET',
+                success: function (response) {
+                    //alert(response);
+                    var responseData = JSON.parse(response);
+                    u_0.textContent = "" + responseData.name;
+                    u_1.textContent = "" + responseData.contact;
+                    u_2.textContent = "" + responseData.phone;
+                    u_3.textContent = "" + responseData.gender;                
+                    u_4.textContent = "" + responseData.detail;
+                  
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                }
+            });
+            downloadPhoto();
+            open_photo();
+        }
+
+        function change() {
+            var name = $('#m0').val();
+            var contact = $('#m1').val();
+            var phone = $('#m2').val();
+            var gender = $('#m3').val();
+            var detail = $('#m4').val();
+            $.ajax({
+                url: "user.php/upload_profile.php",
+                method: 'POST',
+                data: {
+                    name: name,
+                    contact: contact,
+                    phone: phone,
+                    gender: gender,
+                    detail: detail,
+                },
+                success: function (response) {
+                    alert(response);
+                    location.href = "user.html";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                }
+            });
+        }
+        function show_modal() {
+
+            var u_0 = document.getElementById("u_0");
+            var inpu0 = document.getElementById("m0");
+            var u_1 = document.getElementById("u_1");
+            var inpu1 = document.getElementById("m1");
+            var u_2 = document.getElementById("u_2");
+            var inpu2 = document.getElementById("m2");
+            var u_3 = document.getElementById("u_3");
+            var inpu3 = document.getElementById("m3");
+            var u_4 = document.getElementById("u_4");
+            var inpu4 = document.getElementById("m4");
+            var textContent
+
+            if (u_0 && inpu0) {
+                textContent = u_0.textContent || u_0.innerText;
+                inpu0.value = textContent;
+            }
+            if (u_1 && inpu1) {
+                textContent = u_1.textContent || u_1.innerText;
+                inpu1.value = textContent;
+            }
+            if (u_2 && inpu2) {
+                textContent = u_2.textContent || u_2.innerText;
+                inpu2.value = textContent;
+            }
+            if (u_3 && inpu3) {
+                textContent = u_3.textContent || u_3.innerText;
+                inpu3.value = textContent;
+            }
+            if (u_4 && inpu4) {
+                textContent = u_4.textContent || u_4.innerText;
+                inpu4.value = textContent;
+            }
+
+        }
+
+        function changeappliance(i,uid){
+            var photo = $('#photo_'+i+'').val();
+            var detail = $('#detail_'+i+'').val();
+            var date = $('#date_'+i+'').val();
+            console.log(photo);
+            console.log(detail);
+            console.log(date);
+            $.ajax({
+                url:"user.php/updatephoto.php",
+                method:'POST',
+                data:{
+                    photo:photo,
+                    detail: detail,
+                    date: date,
+                    id:uid,
+                },
+                success: function (response) {
+                    alert(response);
+                    location.href = "user.html";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                }
+            });
+            
+        }
+
+        function delete_photo(i,uid){
+            var photo = $('#photo_'+i+'').val();
+            var detail = $('#detail_'+i+'').val();
+            var date = $('#date_'+i+'').val();
+            console.log(photo);
+            console.log(detail);
+            console.log(date);
+            $.ajax({
+                url:"user.php/delete.php",
+                method:'POST',
+                data:{
+                    id:uid,
+                },
+                success: function (response) {
+                    alert(response);
+                    location.href = "user.html";
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('發生錯誤' + textStatus + '，錯誤訊息' + errorThrown);
+                }
+            });
+            
+        }
+
+        function open_photo(){ 
+            $.ajax({
+                    url: "user.php/download_photo.php",
+                    type: "GET",
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            var photo = response[i];                          
+                            var item ='<div class="col-xl-3 col-md-4 col-sm-6 col-12">\
+                                <div data-bs-toggle="modal" data-bs-target="#exampleModal'+i+'"  >\
+                                    <img src="'+"data:image/jpeg;base64," + photo.data+'" width="100%" height="300" id="photo_show">\
+                                </div> \
+                        <!-- Modal -->\
+                        <div class="modal fade " id="exampleModal'+i+'" tabindex="-1" >\
+                            <div class="modal-dialog modal-dialog-centered">\
+                                <div class="modal-content">\
+                                    <div class="modal-body">\
+                                        <div class="dropdown dropstart ms-auto me-4 mt-3 position-absolute top-0 end-0">\
+                                            <i class="fas fa-ellipsis-vertical fa-xl" data-bs-toggle="dropdown" aria-expanded="false"></i>\
+                                            <ul class="dropdown-menu">\
+                                            <li>\
+                                                <span class="dropdown-item">\
+                                                    <div data-bs-toggle="modal" data-bs-target="#exampleModal'+(i+1)*100000+'">\
+                                                    <i class="fas fa-pen mx-2"></i>更改\
+                                                    </div>\
+                                                </span>\
+                                            </li>\
+                                            <li>\
+                                                <span class="dropdown-item" onclick="delete_photo('+i+','+photo.id+')">\
+                                                    <i class="fas fa-trash mx-2" ></i>刪除\
+                                                </span>\
+                                            </li>\
+                                            </ul>\
+                                        </div>\
+                                        <div class="col-sm-8">\
+                                            <div class="card-block ">\
+                                                <div class="row g-3">\
+                                                    <div class="col-sm-12">\
+                                                        <p class="m-b-10 f-w-600">作品名稱</p>\
+                                                        <h6 class="text-muted f-w-400">'+photo.photo+'</h6>\
+                                                    </div>\
+                                                    <div class="col-sm-12">\
+                                                        <p class="m-b-10 f-w-600">介紹</p>\
+                                                        <h6 class="text-muted f-w-400" style="white-space: pre-line;">'+photo.detail+'</h6>\
+                                                    </div>\
+                                                    <div class="col-sm-12">\
+                                                        <p class="m-b-10 f-w-600">拍攝時間</p>\
+                                                        <h6 class="text-muted f-w-400">'+photo.date+'</h6>\
+                                                    </div>\
+                                                </div>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+                                            <!-- Modal -->\
+                                                    <div class="modal fade " id="exampleModal'+(i+1)*100000+'" tabindex="-1" >\
+                                                        <div class="modal-dialog modal-dialog-centered">\
+                                                            <div class="modal-content">\
+                                                                <div class="modal-body">\
+                                                                    <div class="col-sm-12">\
+                                                                        <div class="card-block ">\
+                                                                            <div class="row g-3">\
+                                                                                <div class="col-sm-12">\
+                                                                                    <div class="form-floating ">\
+                                                                                    <input type="text" class="form-control" value="'+photo.photo+'" id="photo_'+i+'" placeholder="name@example.com">\
+                                                                                    <label for="photo">作品名稱</label>\
+                                                                                    </div>\
+                                                                                </div>\
+                                                                                <div class="col-sm-12">\
+                                                                                    <div class="form-floating col-xl-12 col-md-12 col-sm-12">\
+                                                                                        <textarea class="form-control" style="min-height: 150px;" placeholder="here" id="detail_'+i+'">'+photo.detail+'</textarea>\
+                                                                                        <label for="detail">作品介紹</label>\
+                                                                                    </div>\
+                                                                                </div>\
+                                                                                <div class="col-sm-12">\
+                                                                                    <div class="form-floating">\
+                                                                                    <input type="text" class="form-control"  value="'+photo.date+'" id="date_'+i+'" placeholder="name@example.com">\
+                                                                                    <label for="photo">拍攝時間</label>\
+                                                                                    </div>\
+                                                                                </div>\
+                                                                                <div class="d-grid gap-2">\
+                                                                                    <button type="button" class="btn btn-outline-secondary" onclick="changeappliance('+i+','+photo.id+')">更改</button>\
+                                                                                </div>\
+                                                                            </div>\
+                                                                        </div>\
+                                                                    </div>\
+                                                                </div>\
+                                                            </div>\
+                                                        </div>\
+                                                    </div>\
+                    </div>' ;
+                    $('#photo_show_row').append(item);
+                            }
+                        } else {
+                            $('#photo_show_row').html('沒有照片可顯示');
+                        }
+                    },
+
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+
+        }
+    </script>
+</head>
+
+<body onload="onpen()">
+    <div id="wrapper">
+        <div class="overlay"></div>
+
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+            <ul class="nav sidebar-nav">
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user me-2 "></i>會員專區</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="user.html"><i class="fa-solid fa-user-plus me-2"></i>個人資料</a>
+                        </li>
+                        <li><a class="dropdown-item" href="record.html"><i class="fa-solid fa-basket-shopping me-2"></i>買賣紀錄</a>
+                        </li>
+                        <li><a class="dropdown-item" href="consultation_record.html"><i class="fa-solid fa-headset me-2"></i>諮詢紀錄</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-cart-shopping  me-2 "></i>器材買賣</a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_product.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋品項</a>
+                        </li>
+                        <li><a class="dropdown-item" href="shop.html"><i
+                                    class="fa-solid fa-clipboard-list me-3"></i>所有品項</a></li>
+                        <li><a class="dropdown-item" href="upappliance.html"><i class="fa-solid fa-tag me-2"></i>上架攝影器材</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a class=" dropdown-toggle" href="#works" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-camera-retro me-2"></i>外拍諮詢
+                    </a>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="search_photographer.html"><i class="fa-solid fa-magnifying-glass me-2"></i>搜尋攝影師</a>
+                        </li>
+                        <li><a class="dropdown-item" href="allphoto.html"><i class="fa-solid fa-image me-2"></i>所有作品集</a></li>
+                        <li><a class="dropdown-item" href="upphoto.html"><i
+                                    class="fa-solid fa-photo-film me-2"></i>發布作品集</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+        </nav>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <button type="button" class="hamburger animated fadeInLeft is-closed"  data-toggle="offcanvas">
+                <span class="hamb-top"></span>
+                <span class="hamb-middle"></span>
+                <span class="hamb-bottom"></span>
+            </button>
+
+            <div class="container">
+                <div class="row  justify-content-center ">
+                    <div class="col-xl-12 col-md-12 col-sm-12">
+                        <div class="card user-card-full">
+                            <div class="row m-l-0 m-r-0">
+                                <!--lift image-->
+                                <div class="col-sm-4 bg-c-lite-green user-profile">
+                                    <div class="card-block text-center text-white">
+                                        <div class="mb-4">
+                                            <img id="userImage" src="https://img.icons8.com/bubbles/100/000000/user.png"
+                                                class="img-radius w-50">
+                                        </div>
+                                        <h5 class="f-w-600"  id="u_0"></h5>
+                                        <p></p>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop0">
+                                            <i class="fa-solid fa-camera" onclick=""></i>
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop0" data-bs-backdrop="static"
+                                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-dark" id="staticBackdropLabel ">
+                                                            上傳照片
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close">
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="formFile" class="form-label">Default file input
+                                                                example</label>
+                                                            <input class="form-control" type="file" id="photoInput">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">取消</button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="uploadPhoto()">更改</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop" onclick="show_modal()">
+                                            <i class="fa-sharp fa-solid fa-pen"></i>
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                            data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-dark" id="staticBackdropLabel">
+                                                            個人資料
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close">
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <row class="container justify-content-center">
+                                                            <div class="input-group mb-3">
+                                                                <span class="input-group-text">名稱</span>
+                                                                <input type="text" class="form-control" id="m0">
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <span class="input-group-text">聯絡資訊</span>
+                                                                <input type="text" class="form-control" id="m1">
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <span class="input-group-text">電話</span>
+                                                                <input type="text" class="form-control" id="m2"
+                                                                    aria-label="Userphone"
+                                                                    aria-describedby="basic-addon1">
+                                                            </div>
+                                                            <div class="input-group mb-3">
+                                                                <span class="input-group-text">性別</span>
+                                                                <input type="text" class="form-control" id="m3"
+                                                                    aria-label="Usegender"
+                                                                    aria-describedby="basic-addon1">
+                                                            </div>
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">個人介紹</span>
+                                                                <textarea class="form-control" id="m4" aria-label="With textarea">
+                                                                </textarea>
+                                                            </div>
+                                                        </row>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">關閉
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            onclick="change()">更改
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-link"  onclick="logout()">
+                                            <i class="fa-solid fa-person-walking-arrow-right"></i>
+                                        </button>
+                                        
+                                    </div>
+                                </div>
+                                <!--right information-->
+
+                                <div class="col-sm-8">
+                                    <div class="card-block ">
+                                        <h6 class="mb-4 p-b-5 b-b-default f-w-600">個人資料</h6>
+                                        <div class="row g-3">
+                                            <div class="col-sm-6">
+                                                <p class="m-b-10 f-w-600">聯絡資訊：</p>
+                                                <h6 class="text-muted f-w-400" id="u_1"></h6>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <p class="m-b-10 f-w-600">電話：</p>
+                                                <h6 class="text-muted f-w-400" id="u_2"></h6>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <p class="m-b-10 f-w-600">性別：</p>
+                                                <h6 class="text-muted f-w-400" id="u_3"></h6>
+                                            </div>
+                                        </div>
+                                        <h6 class="mb-4 m-t-40 p-b-5 b-b-default f-w-600">個介</h6>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <p class="m-b-10 f-w-600">自我介紹:</p>
+                                                <h6 class="text-muted f-w-400" id="u_4"></h6>
+                                            </div>
+                                        </div>
+                                        <ul class="social-link list-unstyled m-t-40 m-b-10">
+                                            <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title=""
+                                                    data-original-title="facebook" data-abc="true"><i
+                                                        class="mdi mdi-facebook feather icon-facebook facebook"
+                                                        aria-hidden="true"></i></a></li>
+                                            <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title=""
+                                                    data-original-title="twitter" data-abc="true"><i
+                                                        class="mdi mdi-twitter feather icon-twitter twitter"
+                                                        aria-hidden="true"></i></a></li>
+                                            <li><a href="#!" data-toggle="tooltip" data-placement="bottom" title=""
+                                                    data-original-title="instagram" data-abc="true"><i
+                                                        class="mdi mdi-instagram feather icon-instagram instagram"
+                                                        aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--photo-->
+                <div class="row g-2 justify-content-start mb-5" id="photo_show_row">
+
+                </div>
+                <div class="row d-flex container h-50">
+                </div>
+
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
